@@ -1,0 +1,69 @@
+---
+title: "GC- Final Project"
+author: "George Cruz"
+date: "7/23/2020"
+output: html_document
+---
+# Final Project 
+## In The Nature of Vocabulary Acquisition, Robert J. Sternberg of Yale University made a profound statement:
+###“… vocabulary is probably the best single indicator of a person’s overall level of intelligence. Stated in another way, if one wants a quick and not-too-dirty measure of a person’s psychometrically measured intelligence, and thus has time to give just one brief test of it, vocabulary is generally the best predictor of overall score on a psychometric IQ test. (p. 90)”
+###The purpose of my analysis will be to compare and contrast results from a vocabulary test conducted between 1974 and 2012 to try to understand the relationship between education/language accross these decades. 
+
+```{r}
+require(ggplot2)
+theURL <- "https://raw.githubusercontent.com/georg4re/LearningR/master/Vocab.csv"
+vocab <- read.table(file=theURL, header=TRUE, sep=",")
+str(vocab)
+summary(vocab)
+
+```
+### Rename some columns.
+```{r}
+library(dplyr)
+newVocab <- rename(vocab, gender=sex, academic_level=education, lexicon=vocabulary)
+head(newVocab)
+
+```
+### Looking at Level of education by gender.
+
+```{r}
+require(ggplot2)
+library(dplyr)
+library(magrittr)
+# Create a group-means data set
+gd <- (newVocab %>% group_by(year, gender) %>% summarize(level=mean(academic_level), lexicon=mean(lexicon)))
+
+# Plot both data sets
+#ggplot(data = gd, aes(x = year, y = level))+
+#  geom_line(aes(color = gender), size = 2) +
+#  scale_color_manual(values = c("#00AFBB", "#E7B800")) +
+ggplot(gd, aes(x = year, y = level)) + 
+  geom_line(aes(color = gender), size = 1) +
+  scale_color_manual(values = c("#E7B800", "#00008b")) +
+  theme_minimal()
+
+```
+
+### Vocabulary Mastery by gender
+```{r}
+ggplot(gd, aes(x = year, y = lexicon)) + 
+  geom_line(aes(color = gender), size = 1) +
+  scale_color_manual(values = c("#E7B800", "#00008b")) +
+  theme_minimal()
+
+```
+
+### Let's look at the data without regards to gender
+```{r}
+gd <- (newVocab %>% group_by(year) %>% summarize(level=mean(academic_level), lexicon=mean(lexicon)))
+
+# Plot both data sets
+#ggplot(data = gd, aes(x = year, y = level))+
+#  geom_line(aes(color = gender), size = 2) +
+#  scale_color_manual(values = c("#00AFBB", "#E7B800")) +
+ggplot(gd, aes(x = year, y = lexicon)) + 
+  geom_line(color = "#7EF9FF", size = 1) +
+  geom_line(aes(y=level), colour="orange") +
+  theme_minimal()
+
+```

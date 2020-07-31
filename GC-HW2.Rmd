@@ -16,10 +16,41 @@ vocab %>% group_by(year, sex) %>% summarize(mean(education), mean(vocabulary), m
 
 ```
 ### Create a new data frame with a subset of the columns and rows. Make sure to rename it.
+```{r}
+collegeDf = subset(vocab, education>12 )
+
+df <- as_tibble(collegeDf) #To print nicely on Knit
+print(df)
+
+```
+
 
 
 ### Create new column names for the new data frame.
-### Use the summary function to create an overview of your new data frame. The print the mean and median for the same two attributes. Please compare.
-### For at least 3 values in a column please rename so that every value in that column is renamed.
-### Display enough rows to see examples of all of steps 1-5 above.
 
+```{r newCollegeDF, max.print=30}
+library(dplyr)
+newCollegeDF <- rename(collegeDf, gender=sex, academic_level=education, lexicon=vocabulary)
+
+df <- as_tibble(newCollegeDF) #To print nicely on Knit
+print(df)
+```
+
+### Use the summary function to create an overview of your new data frame.
+### Then print the mean and median for the same two attributes. Please compare.
+```{r}
+(newCollegeDF %>% group_by(year, gender) %>% summarize(mean(academic_level), mean(lexicon), median(academic_level), median(lexicon)))
+
+```
+
+### For at least 3 values in a column please rename so that every value in that column is renamed.
+
+### Display enough rows to see examples of all of steps 1-5 above.
+```{r}
+newCollegeDF = mutate(newCollegeDF, gender = ifelse(gender == "Female", "F", "M"))
+newCollegeDF = mutate(newCollegeDF, academic_level = ifelse(academic_level <= 14, "2 Year College", ifelse(academic_level <= 16, "Undergraduate", "Graduate")))
+
+newCollegeDF <- as_tibble(newCollegeDF)
+print(newCollegeDF)
+
+```
